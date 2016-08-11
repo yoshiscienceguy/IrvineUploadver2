@@ -1,0 +1,1 @@
+//ip/folder dest cifs username=name,password=pass,sec=ntlm,_netdev,x-systemd.automount 0 0
