@@ -1,11 +1,16 @@
 import os, shutil
 def CheckDnDWrapper(filepath = "C:/Python27/tcl/"):
     filePresent = False
+    initFile = False
     for directory in os.listdir(filepath):
         if("dnd" in directory):
             filePresent = True
             print("Dnd Library Present")
-            break
+        if("__init__" in directory):
+            initFile = True
+    if(not initFile):
+        shutil.copy("libs/__init__.py","C:/Python27/tcl/")
+        print("Copying __init__.py")
     if(not filePresent):
         os.makedirs("C:/Python27/tcl/tkdnd2.8")
         for files in os.listdir("libs/tkdnd2.8"):

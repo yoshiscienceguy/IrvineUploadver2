@@ -15,7 +15,7 @@ class Menu():
         #self.handlers = Handlers()
         self.root.iconbitmap("icons\logo.ico")
         self.root.minsize(400,200)
-        self.root.maxsize(400,700)
+        self.root.maxsize(600,900)
         self.root.title("Google Drive Upload")
         
     def drawDropDown(self,frame,functionName,listDisplay):
@@ -38,30 +38,30 @@ class Menu():
 
         else: 
             return submit
-    def drawRadioButtons(self,frame,options,excluded = None):
+    def drawRadioButtons(self,frame,options,c = None,excluded = None):
         
         var = StringVar()
-
         Buttons = []
-        if(excluded == None):
-            for texts, option in options:
-                rb = Radiobutton(frame, text = texts, variable = var, value = option)
-                rb.pack(side = LEFT, anchor = W,padx = 10)
-                rb.deselect()
-                Buttons.append(rb)
-            var.set(options[1][1])
-        else:
+        if len(options) >0:
+            if(excluded == None):
+                for texts, option in options:
+                    rb = Radiobutton(frame, text = texts, variable = var, value = option, command = c)
+                    rb.pack(side = LEFT, anchor = W,padx = 10)
+                    rb.deselect()
+                    Buttons.append(rb)
+                var.set(options[1][1])
+            else:
 
-            for texts, option in options:
-                if(option in excluded):
-                    rb = Radiobutton(frame, text = texts, variable = var, value = option,state = "disabled")
-                else:
-                    rb = Radiobutton(frame, text = texts, variable = var, value = option)
-                
-                rb.pack(side = LEFT, anchor = W,padx = 10)
-                rb.deselect()
-                Buttons.append(rb)
-            var.set(options[0][1])
+                for texts, option in options:
+                    if(option in excluded):
+                        rb = Radiobutton(frame, text = texts, variable = var, value = option,state = "disabled")
+                    else:
+                        rb = Radiobutton(frame, text = texts, variable = var, value = option, command = c)
+                    
+                    rb.pack(side = LEFT, anchor = W,padx = 10)
+                    rb.deselect()
+                    Buttons.append(rb)
+                var.set(options[0][1])
         
         
         return Buttons , var

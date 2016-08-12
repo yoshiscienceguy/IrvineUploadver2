@@ -117,6 +117,18 @@ class Drive():
                     
                     return toreturn
         return None
+    def GetAllTypes(self,ParentId = None):
+        if(not ParentId):
+            ParentId = self.ids.StudentFolder
+        file_list = self.drive.ListFile({"q":"'"+ParentId+"' in parents and trashed = false"}).GetList()
+        files = {}
+        for file1 in file_list:
+            #print(file1['alternateLink'])
+            if(file1['mimeType'] == "application/vnd.google-apps.folder"):
+                files[file1["title"] + " [Folder]"] = (file1["id"],file1["modifiedDate"])
+            else:
+                files[file1["title"]] = (file1["id"],file1["modifiedDate"])
+        return files
     def GetFolders(self,ParentId = None):
         if(not ParentId):
             ParentId = self.ids.StudentFolder
@@ -137,7 +149,7 @@ class Drive():
             #print(file1['alternateLink'])
             if(not file1['mimeType'] == "application/vnd.google-apps.folder"):
                 Files[file1["title"]] = file1["id"]
-        print(Files)
+        #print(Files)
         return Files 
     def CopyTechnicalReport(self,studentFolder,name = "Technical Report"):
         file_list = self.drive.ListFile({"q":"'"+studentFolder+"' in parents and trashed = false"}).GetList()

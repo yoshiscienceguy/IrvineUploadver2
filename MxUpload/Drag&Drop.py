@@ -1,4 +1,4 @@
-import LibraryCheck
+#import LibraryCheck
 from TkinterDnD2 import *
 from Tkinter import *
 
