@@ -126,7 +126,7 @@ class Drive():
             #print(file1['alternateLink'])
             if(file1['mimeType'] == "application/vnd.google-apps.folder"):
                 Folders[file1["title"]] = file1["id"]
-        print(Folders)
+        #print(Folders)
         return Folders
     def GetFiles(self,ParentId = None):
         if(not ParentId):
