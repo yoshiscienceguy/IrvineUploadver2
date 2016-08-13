@@ -49,11 +49,13 @@ class Drive():
     def Connect(self):
         print("Authenticating")
         gauth = GoogleAuth()
-
-        CurrentOS = platform.platform().split('-')[0]
-
-        if(CurrentOS != "Windows"):
-            gauth.LoadCredentialsFile("./Mx/MxPiDrive/mycreds.txt")
+        import os
+        pathhome = os.getcwd()
+        os.chdir(pathhome+"/credentials/")
+        CurrentOS = platform.system()
+        
+        if(CurrentOS == "Linux"):
+            gauth.LoadCredentialsFile("mycreds.txt")
         else:
             gauth.LoadCredentialsFile("credentials/mycreds.txt")
             
@@ -63,11 +65,12 @@ class Drive():
             gauth.Refresh()
         else:
             gauth.Authorize()
-        if(CurrentOS != "Windows"):
-            gauth.SaveCredentialsFile("./Mx/MxPiDrive/mycreds.txt")
+        if(CurrentOS == "Linux"):
+            gauth.SaveCredentialsFile("mycreds.txt")
         else:
             gauth.SaveCredentialsFile("credentials/mycreds.txt")
-            
+        os.chdir(pathhome)
+        print(os.getcwd())
         print("Done Authenticating")
 
         self.drive = GoogleDrive(gauth)

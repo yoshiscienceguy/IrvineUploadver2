@@ -77,6 +77,8 @@ class Handlers():
             index = studentList_obj.curselection()
             if(event != None):
                 self.Name = self.searchResults[index[0]]
+            else:
+                self.Name = studentList_obj.get(ACTIVE)
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
             resultText_var.set("Selected Student: " + self.Name)
             self.studentLevels = drive.GetFolders(self.ID)
@@ -194,8 +196,14 @@ class Handlers():
             fileName = projList_obj.get(ACTIVE)
             fileID,fileStamp = self.studentProjects[self.LevelID][fileName]
             drive.DownloadFile (fileID,fileName)
-            userhome = os.path.expanduser('~')
-            desktop = userhome + '\\Desktop\\'
+            useros = platform.system()
+            if(useros== "Windows"):
+                userhome = os.path.expanduser('~')
+                
+                desktop = userhome + '\\Desktop\\'
+            else:
+                desktop = "/home/pi/Desktop/"
+            print(desktop)
             if os.path.exists(desktop+fileName):
                 os.remove(desktop+fileName)
             shutil.move(fileName,desktop)

@@ -13,7 +13,12 @@ class Menu():
     def __init__(self):
         self.root = Tk()
         #self.handlers = Handlers()
-        self.root.iconbitmap("icons\logo.ico")
+        try:
+            self.root.iconbitmap("icons\logo.ico")
+        except:
+##            icon = PhotoImage(file = "icons//logo.ico")
+##            self.root.tk.call("wm","iconphoto",self.root._w,icon)
+            pass
         self.root.minsize(400,200)
         self.root.maxsize(600,900)
         self.root.title("Google Drive Upload")
