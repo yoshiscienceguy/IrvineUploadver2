@@ -1,6 +1,6 @@
 from gdrive import *
 from Tkinter import *
-
+import tkFileDialog
 def TestConnection():
     try:
         response = urllib2.urlopen("http://www.google.com",timeout=1)
@@ -91,13 +91,25 @@ class Menu():
 
         #textbox.pack(pady = 10,)
         return textbox,vartoSay
-    def drawTextBox (self,frame,textToDisplay):
+    def drawTextBox (self,frame,textToDisplay,bind= True):
         self.userinput = StringVar()
         self.entry = Entry(frame,textvariable = self.userinput,width = 30,justify =LEFT)
-        self.entry.bind("<Button-1>", lambda clicked : self.userinput.set(""))
+        if(bind):
+            self.entry.bind("<Button-1>", lambda clicked : self.userinput.set(""))
         self.userinput.set(textToDisplay)
         return self.entry , self.userinput
- 
+    def drawDialogBox(self,frame,title):
+        options = {}
+        options['defaultextension'] = '.py'
+        options['filetypes'] = [('Programming Files', '.py .io .txt .sb2'),('All Files', '.*')]
+        osType = platform.platform().split("-")[0]
+
+        #options['initialdir'] = os.path.expanduser("~")+"\\Desktop\\"
+        options['parent'] = frame
+        options['title'] = 'Select file to Upload'
+        
+        path = tkFileDialog.askopenfilenames(**options)
+        return path
 ##menu = Menu()
 ##handlers = Handlers()
 ##menu.drawDropDown(menu.root,"handlers.TestHook",["hi","bye","yolo"])
