@@ -151,17 +151,22 @@ class Drive():
                 Files[file1["title"]] = file1["id"]
         #print(Files)
         return Files 
-    def CopyTechnicalReport(self,studentFolder,name = "Technical Report"):
+    def CopyTechnicalReport(self,studentFolder,techType,name):
         file_list = self.drive.ListFile({"q":"'"+studentFolder+"' in parents and trashed = false"}).GetList()
         found = False
+        techID = ""
         for file1 in file_list:
             if(not file1['mimeType'] == "application/vnd.google-apps.folder"):
                 if(name == file1['title']):
                     found = True
-                        
+                    return file1['alternateLink']
+                    
+        techReportType = self.ids.CTechnicalReport         
+        if(techType == "Buildologie"):
+            techReportType = self.ids.BTechnicalReport
         if(not found):
-            self.drive.auth.service.files().copy(fileId = self.ids.CTechnicalReport, body={"parents":[{"kind": "drive#fileLink",
-                                                                                                       "id": studentFolder}], 'title': name}).execute()
+            techInfo = self.drive.auth.service.files().copy(fileId = techReportType, body={"parents":[{"kind": "drive#fileLink","id": studentFolder}], 'title': name}).execute()
+            return techInfo['alternateLink']
     def DownloadFile(self,FileId,FileName):
         file1 = self.drive.CreateFile({'id':FileId})
         file1.GetContentFile(FileName)

@@ -1,5 +1,6 @@
+#1:40 PM 8/13/2016
 from UI import *
-
+import webbrowser, os, shutil
 from libs.tkdndWrapper import TkDND
 class Handlers():
     def __init__(self):
@@ -72,8 +73,10 @@ class Handlers():
     def ChooseStudent(self,event):
         global drive, handlers,studentList_obj,resultText_var,studLvl_objs,studLvl_var
         if(self.TypeID != ""):
+            print(self.searchTerm)
             index = studentList_obj.curselection()
-            self.Name = self.searchResults[index[0]]
+            if(event != None):
+                self.Name = self.searchResults[index[0]]
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
             resultText_var.set("Selected Student: " + self.Name)
             self.studentLevels = drive.GetFolders(self.ID)
@@ -153,12 +156,16 @@ class Handlers():
             print("success")
             if(self.IsUploadMenu):
                 self.uploadWindow.destroy()
+            self.IsUploadMenu = False
             handlers.ChooseStudent(None)
-
+            self.IsUploadMenu = False
     def parseDragNDrop(self,event):
+        
         global menu, handlers
+        print("hi")
         if(self.currentCodeFolder == ""):
             return
+        print("yo")
         files = menu.root.tk.splitlist(event.data)
         self.pathData ={}
         toshow = ""
@@ -176,6 +183,7 @@ class Handlers():
             self.filepath_var.set(toshow)
         else:
             handlers.UploadBatch()
+        
     def DownloadClick(self,event):
         global handlers
         handlers.Download()
@@ -186,6 +194,21 @@ class Handlers():
             fileName = projList_obj.get(ACTIVE)
             fileID,fileStamp = self.studentProjects[self.LevelID][fileName]
             drive.DownloadFile (fileID,fileName)
+            userhome = os.path.expanduser('~')
+            desktop = userhome + '\\Desktop\\'
+            if os.path.exists(desktop+fileName):
+                os.remove(desktop+fileName)
+            shutil.move(fileName,desktop)
+    def TechnicalReport(self):
+        global projList_obj,drive,studLvl_var
+        if(self.currentCodeFolder != "" and len(projList_obj.curselection()) > 0):
+            print("Opening TechReport")
+            fileName = projList_obj.get(ACTIVE)
+            fileName = fileName.split(".")[0] + " Report"
+            TechFolder = drive.GetFolders(studLvl_var.get())["Documents"]
+            url = drive.CopyTechnicalReport(TechFolder,self.TypeName,fileName)
+            webbrowser.open(url)
+            
     def TestHook(self,*args):
         print(args) 
 #programNames = ["Codologie","Buildologie","Gamologie","K-12 STEM Club","Camps"]
@@ -269,6 +292,6 @@ uploadButton = menu.drawButton(ButtonsFrame,"Upload",handlers.Upload)
 uploadButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10,anchor = W,expand = 1)
 downloadButton = menu.drawButton(ButtonsFrame,"Download",handlers.Download)
 downloadButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10,expand = 1)
-techreportButton = menu.drawButton(ButtonsFrame,"Technical Report",handlers.TestHook,specialWidth= 15)
+techreportButton = menu.drawButton(ButtonsFrame,"Technical Report",handlers.TechnicalReport,specialWidth= 15)
 techreportButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10, anchor = E,expand = 1)
 menu.root.mainloop()
