@@ -57,7 +57,7 @@ class Drive():
         if(CurrentOS == "Linux"):
             gauth.LoadCredentialsFile("mycreds.txt")
         else:
-            gauth.LoadCredentialsFile("credentials/mycreds.txt")
+            gauth.LoadCredentialsFile("mycreds.txt")
             
         if( gauth.credentials is None):
             gauth.LocalWebserverAuth()
@@ -68,7 +68,7 @@ class Drive():
         if(CurrentOS == "Linux"):
             gauth.SaveCredentialsFile("mycreds.txt")
         else:
-            gauth.SaveCredentialsFile("credentials/mycreds.txt")
+            gauth.SaveCredentialsFile("mycreds.txt")
         os.chdir(pathhome)
         print(os.getcwd())
         print("Done Authenticating")
