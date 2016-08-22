@@ -1,5 +1,7 @@
 from gdrive import *
 from Tkinter import *
+from tkMessageBox import *
+import ttk
 import tkFileDialog
 def TestConnection():
     try:
@@ -34,7 +36,8 @@ class Menu():
         return DropDown , AssociatedVariable
     
     def drawButton(self,frame,toSay,functionName,specialWidth = 5,picName = None):
-        submit = Button(frame, text = toSay,command = functionName,borderwidth = 2,relief =RAISED,width= specialWidth)
+        submit = ttk.Button(frame, text = toSay,command = functionName,width= specialWidth)
+        #,borderwidth = 2,relief =RAISED,width= specialWidth)
         
         if(picName):
             photo = PhotoImage (file="ICONS//"+picName+".gif")
@@ -43,18 +46,21 @@ class Menu():
 
         else: 
             return submit
-    def drawRadioButtons(self,frame,options,c = None,excluded = None):
+    def drawRadioButtons(self,frame,options,c = None,excluded = None,turnOn = False):
         
         var = StringVar()
         Buttons = []
         if len(options) >0:
             if(excluded == None):
                 for texts, option in options:
-                    rb = Radiobutton(frame, text = texts, variable = var, value = option, command = c)
+                    rb = ttk.Radiobutton(frame, text = texts, variable = var, value = option, command = c)
                     rb.pack(side = LEFT, anchor = W,padx = 10)
-                    rb.deselect()
+                    if(not turnOn):
+                        rb.selected = "Off"
+                        rb['state'] = "disabled"
                     Buttons.append(rb)
-                var.set(options[1][1])
+                var.set(options[0][1])
+                #Buttons[0].selected = "current"
             else:
 
                 for texts, option in options:
@@ -64,7 +70,7 @@ class Menu():
                         rb = Radiobutton(frame, text = texts, variable = var, value = option, command = c)
                     
                     rb.pack(side = LEFT, anchor = W,padx = 10)
-                    rb.deselect()
+                    rb.selected = "Off"
                     Buttons.append(rb)
                 var.set(options[0][1])
         
@@ -115,6 +121,12 @@ class Menu():
         
         path = tkFileDialog.askopenfilenames(**options)
         return path
+    def drawComboBox(self,frame):
+        varSelection = StringVar()
+        comboBox = ttk.Combobox(frame,textvariable = varSelection)
+        return varSelection,comboBox
+    def alertBox(self,title,msg):
+        showinfo(title,msg)
 ##menu = Menu()
 ##handlers = Handlers()
 ##menu.drawDropDown(menu.root,"handlers.TestHook",["hi","bye","yolo"])

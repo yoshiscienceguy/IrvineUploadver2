@@ -27,42 +27,55 @@ class Handlers():
         self.pathData = {}
         self.IsUploadMenu = False
     def defineStudentType(self,*args):
-        global dropDown_var,drive,search_var
+        global dropDown_var,drive,search_var,studentsList_var
         self.TypeName = dropDown_var.get()
         self.TypeID,dummy = drive._GetFolderInfo(self.TypeName,drive.ids.StudentFolder)
         #print(self.TypeID)
         self.clearSearch(None)
+        studentsList_var.set("Select Student Name")
         search_var.set("Enter name...")
         self.getStudentNames()
     def getStudentNames(self):
         global drive,studentList_obj
         self.studentNamesIds = drive.GetFolders(self.TypeID)
         self.studentNamesLocal = sorted(self.studentNamesIds.keys())
-        studentList_obj.delete(0,END)
-        
-        for thing in self.studentNamesLocal:
-            if(not "_" in thing):
-                if(self.searchTerm == "" or self.searchTerm in thing):
-                    studentList_obj.insert(END,thing)
+        studentList_obj['values'] = self.studentNamesLocal
+##        studentList_obj.delete(0,END)
+##        
+##        for thing in self.studentNamesLocal:
+##            if(not "_" in thing):
+##                if(self.searchTerm == "" or self.searchTerm in thing):
+##                    studentList_obj.insert(END,thing)
     def updateStudentNames(self):
-        global studentList_obj
+        global studentList_obj,studentsList_var
         studentList_obj.delete(0,END)
         self.searchResults = []
-        for thing in self.studentNamesLocal:
-            if(not "_" in thing):
-                if(self.searchTerm == "" or self.searchTerm.lower() in thing.lower()):
-                    studentList_obj.insert(END,thing)
-                    self.searchResults.append(thing)
+        listToShow = []
+        if(self.searchTerm != ""):
+            for thing in self.studentNamesLocal:
+                if(not "_" in thing):
+                    if(self.searchTerm == "" or self.searchTerm.lower() in thing.lower()):
+                        #studentList_obj.insert(END,thing)
+                        listToShow.append(thing)
+                        self.searchResults.append(thing)
+        else:
+            listToShow = self.studentNamesLocal
+        studentList_obj['values'] = listToShow
+        if(len(listToShow) > 0):
+            studentsList_var.set(listToShow[0])
     def search(self,event):
         global search_var
         if(self.searchTerm == ""):
             search_var.set("")
+            
         if(self.TypeID != ""):
             if(not event.keycode in [8]):
-                self.searchTerm += str(event.char)
+                if(event.keycode != 13):
+                    self.searchTerm += str(event.char)
             else:
                 self.searchTerm = self.searchTerm[:-1]
-            self.updateStudentNames()
+        
+        self.updateStudentNames()
     def clearSearch(self,event):
         global search_var
         search_var.set("")
@@ -71,14 +84,15 @@ class Handlers():
         global handlers
         handlers.ChooseStudent(None)
     def ChooseStudent(self,event):
-        global drive, handlers,studentList_obj,resultText_var,studLvl_objs,studLvl_var
+        global drive, handlers,studentList_obj,studentsList_var,resultText_var,studLvl_objs,studLvl_var
         if(self.TypeID != ""):
             print(self.searchTerm)
-            index = studentList_obj.curselection()
+            index = studentList_obj.current()
             if(event != None):
-                self.Name = self.searchResults[index[0]]
+                self.Name = self.searchResults[index]
             else:
-                self.Name = studentList_obj.get(ACTIVE)
+                self.Name = studentList_obj.get()
+            
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
             resultText_var.set("Selected Student: " + self.Name)
             self.studentLevels = drive.GetFolders(self.ID)
@@ -91,15 +105,19 @@ class Handlers():
                 self.studentProjects[self.studentLevels[level]] = drive.GetAllTypes(codeFolder)
             for level in studLvl_objs:
                 level.pack_forget()
-            studLvl_objs,studLvl_var = menu.drawRadioButtons (studentLevelFrame,radiobuttons,c = handlers.RadioSelect)
+            studLvl_objs,studLvl_var = menu.drawRadioButtons (studentLevelFrame,radiobuttons,c = handlers.RadioSelect,turnOn = True)
             self.LevelID = studLvl_var.get()
+            print(self.LevelID)
             self.studentProjectsLocal = self.studentProjects[studLvl_var.get()]
             self.currentCodeFolder = self.codeFolders[studLvl_var.get()]
             studentprojects = sorted(self.studentProjectsLocal,key=lambda x: self.studentProjectsLocal[x][1],reverse=True)
             projList_obj.delete(0,END)
-            
+            i = 0
             for thing in studentprojects:
                 projList_obj.insert(END,thing)
+                if( i % 2 == 0):
+                    projList_obj.itemconfigure(i, background='#f0f0ff')
+                i += 1
     def RadioSelect(self):
         global studLvl_var,projList_obj
         self.LevelID = studLvl_var.get()
@@ -242,7 +260,11 @@ programNames = drive.GetFolders(drive.ids.StudentFolder).keys()
 studentType = menu.drawLabelFrame(middlePart,"Student Type")
 textBox_obj,textBox_var = menu.drawMessage(studentType,"Type: ",color = "black")
 textBox_obj.pack(side = LEFT,padx = 20)
-dropDown_obj,dropDown_var = menu.drawDropDown(studentType,handlers.defineStudentType,programNames)
+#dropDown_obj,dropDown_var = menu.drawDropDown(studentType,handlers.defineStudentType,programNames)
+dropDown_var,dropDown_obj = menu.drawComboBox(studentType)
+dropDown_var.set("Select Student Type")
+dropDown_obj.bind('<<ComboboxSelected>>',handlers.defineStudentType)
+dropDown_obj['values'] = programNames
 dropDown_obj.pack(side = LEFT,padx = (20,5), pady = 20)
 
 
@@ -268,11 +290,14 @@ resultText_obj.pack(side = LEFT,padx = 20)
 studentNamesFrame = Frame(studentNames)
 studentNamesFrame.pack(fill = BOTH)
 
-students_frame,studentList_obj = menu.drawMenu(studentNamesFrame,[])
-studentList_obj.bind("<Double-Button-1>",handlers.ChooseStudent)
-students_frame.pack(fill = BOTH,padx = 20,pady = 20)            
+#students_frame,studentList_obj = menu.drawMenu(studentNamesFrame,[])
+studentsList_var,studentList_obj = menu.drawComboBox(studentNamesFrame)
+studentList_obj.bind('<<ComboboxSelected>>',handlers.ChooseStudent)
+#studentList_obj.bind("<Double-Button-1>",handlers.ChooseStudent)
+studentList_obj.pack(fill = BOTH,padx = 20,pady = 20)  
+#students_frame.pack(fill = BOTH,padx = 20,pady = 20)            
        
-selectStudent = menu.drawButton(studentNamesFrame,"Select",handlers.ChooseStudentButton)
+selectStudent = menu.drawButton(studentNamesFrame,"Select",handlers.ChooseStudentButton,specialWidth= 15)
 selectStudent.pack(side = RIGHT,pady = (0,5),padx = 20)
 
 #Third Frame
@@ -284,7 +309,7 @@ studentLevelFrame.pack()
 projects = menu.drawLabelFrame(middlePart,"Select Project")
 
 projectNamesFrame = Frame(projects)
-projectNamesFrame.pack(fill = BOTH)
+projectNamesFrame.pack(fill = BOTH,side = LEFT)
 
 projects_frame,projList_obj = menu.drawMenu(projectNamesFrame,[])
 projList_obj.bind("<Double-Button-1>",handlers.DownloadClick)
@@ -293,13 +318,15 @@ dnd = TkDND(projects_frame)
 dnd.bindtarget(projList_obj, handlers.parseDragNDrop,"text/uri-list")
  
 #Fifth Frame
-action = menu.drawLabelFrame(middlePart,"What do you want to do?")
+#action = menu.drawLabelFrame(middlePart,"What do you want to do?")
+action = Frame(projects)
+action.pack(fill = BOTH,side = LEFT,pady=(30,0))
 ButtonsFrame = Frame(action)
 ButtonsFrame.pack(fill = BOTH,expand = 1)
-uploadButton = menu.drawButton(ButtonsFrame,"Upload",handlers.Upload)
-uploadButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10,anchor = W,expand = 1)
-downloadButton = menu.drawButton(ButtonsFrame,"Download",handlers.Download)
-downloadButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10,expand = 1)
+uploadButton = menu.drawButton(ButtonsFrame,"Upload",handlers.Upload,specialWidth= 10)
+uploadButton.pack(padx = 20, pady = 10,ipadx = 10)
+downloadButton = menu.drawButton(ButtonsFrame,"Download",handlers.Download,specialWidth= 10)
+downloadButton.pack(padx = 20, pady = 10,ipadx = 10)
 techreportButton = menu.drawButton(ButtonsFrame,"Technical Report",handlers.TechnicalReport,specialWidth= 15)
-techreportButton.pack(side = LEFT,padx = 20, pady = 10,ipadx = 10, anchor = E,expand = 1)
+techreportButton.pack(padx = 20, pady = 10,ipadx = 10)
 menu.root.mainloop()
