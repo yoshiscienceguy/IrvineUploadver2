@@ -28,18 +28,21 @@ class Handlers():
         self.IsUploadMenu = False
     def defineStudentType(self,*args):
         global dropDown_var,drive,search_var,studentsList_var
+        self.__init__()
         self.TypeName = dropDown_var.get()
         self.TypeID,dummy = drive._GetFolderInfo(self.TypeName,drive.ids.StudentFolder)
         #print(self.TypeID)
         self.clearSearch(None)
         studentsList_var.set("Select Student Name")
         search_var.set("Enter name...")
+        resultText_var.set("Selected Student: " + self.Name)
         self.getStudentNames()
     def getStudentNames(self):
         global drive,studentList_obj
         self.studentNamesIds = drive.GetFolders(self.TypeID)
         self.studentNamesLocal = sorted(self.studentNamesIds.keys())
         studentList_obj['values'] = self.studentNamesLocal
+        
 ##        studentList_obj.delete(0,END)
 ##        
 ##        for thing in self.studentNamesLocal:
@@ -86,13 +89,16 @@ class Handlers():
     def ChooseStudent(self,event):
         global drive, handlers,studentList_obj,studentsList_var,resultText_var,studLvl_objs,studLvl_var
         if(self.TypeID != ""):
-            print(self.searchTerm)
+            if(self.searchTerm == ""):
+                self.searchResults = self.studentNamesLocal
             index = studentList_obj.current()
             if(event != None):
                 self.Name = self.searchResults[index]
             else:
                 self.Name = studentList_obj.get()
-            
+
+            #menu.root.config(cursor = "wait")
+            #menu.root.update()
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
             resultText_var.set("Selected Student: " + self.Name)
             self.studentLevels = drive.GetFolders(self.ID)
@@ -107,7 +113,6 @@ class Handlers():
                 level.pack_forget()
             studLvl_objs,studLvl_var = menu.drawRadioButtons (studentLevelFrame,radiobuttons,c = handlers.RadioSelect,turnOn = True)
             self.LevelID = studLvl_var.get()
-            print(self.LevelID)
             self.studentProjectsLocal = self.studentProjects[studLvl_var.get()]
             self.currentCodeFolder = self.codeFolders[studLvl_var.get()]
             studentprojects = sorted(self.studentProjectsLocal,key=lambda x: self.studentProjectsLocal[x][1],reverse=True)
@@ -118,6 +123,8 @@ class Handlers():
                 if( i % 2 == 0):
                     projList_obj.itemconfigure(i, background='#f0f0ff')
                 i += 1
+            menu.root.config(cursor = "")
+            menu.root.update()
     def RadioSelect(self):
         global studLvl_var,projList_obj
         self.LevelID = studLvl_var.get()
@@ -135,12 +142,15 @@ class Handlers():
             self.uploadWindow.wm_title("Upload Window")
             self.uploadbox = menu.drawLabelFrame(self.uploadWindow,"Select File(s) to Upload")
             self.filepath_obj,self.filepath_var = menu.drawTextBox(self.uploadbox,"path to file ...",False)
-            self.filepath_obj.pack(side = LEFT,padx = 20,pady = 20)
+            self.filepath_obj.pack(side = LEFT,padx = (20,0),pady = 20)
 
-            dialog_box = menu.drawButton(self.uploadbox,"...",handlers.DiagBox)
-            dialog_box.pack(side = LEFT,padx = (0,10),pady = 20)
-            submit_box = menu.drawButton(self.uploadbox," Upload ",handlers.UploadBatch,specialWidth = 10)
-            submit_box.pack(side = LEFT,padx = 10,pady = 20)
+            dialog_box = menu.drawButton(self.uploadbox,"Browse...",handlers.DiagBox,specialWidth = 15)
+            dialog_box.pack(side = LEFT,padx = (0,20),pady = 20)
+
+            self.frame1 = Frame(self.uploadWindow)
+            self.frame1.pack()
+            submit_box = menu.drawButton(self.frame1," Upload ",handlers.UploadBatch,specialWidth = 15)
+            submit_box.pack(side = BOTTOM,padx = 10,pady = 20)
                                                                     
             dnd = TkDND(self.uploadbox)
             dnd.bindtarget(self.filepath_obj, handlers.parseDragNDrop,"text/uri-list")
@@ -156,42 +166,48 @@ class Handlers():
             files2Frame.pack()
             m2Dummy, self.SelectedFiles = menu.drawMessage(files2Frame,"",color="black",fontSize= 10)
             m2Dummy.pack()
+            
     def DiagBox(self):
         global menu,handlers
         class dummy():
             def __init__(self):
                 self.data = ""
         paths = menu.drawDialogBox(self.uploadbox,"Select File")
+        print(paths)
         togo = dummy()
-        for path in menu.root.tk.splitlist(paths):
-            togo.data += path + " "
+        for path in paths:#menu.root.tk.splitlist(paths):
+            if " " in path:
+                togo.data += "{"+path+"} "
+            else:
+                togo.data+= path+" "
         handlers.parseDragNDrop(togo)
     def UploadBatch(self):
         global drive,handlers
         if(len(self.pathData) > 0 and self.currentCodeFolder != ""):
-            print("Uploading")
+           
             for files in self.pathData:
                 print(self.currentCodeFolder,self.pathData[files],files)
                 drive.UploadFile(self.currentCodeFolder,self.pathData[files],files)
-            print("success")
             if(self.IsUploadMenu):
                 self.uploadWindow.destroy()
             self.IsUploadMenu = False
             handlers.ChooseStudent(None)
             self.IsUploadMenu = False
+            menu.alertBox("Sucess","Upload Complete!")
     def parseDragNDrop(self,event):
         
         global menu, handlers
-        print("hi")
         if(self.currentCodeFolder == ""):
             return
-        print("yo")
+        print("data")
+        print(event.data)
         files = menu.root.tk.splitlist(event.data)
         self.pathData ={}
         toshow = ""
         displayFiles = ""
         if(self.IsUploadMenu):
             self.totalFiles_var.set(str(len(files)) + " File(s):")
+        print(files)
         for filename in files:
             filename2 = filename.split("/")[-2:]
             self.pathData[filename2[1]] = filename
@@ -207,6 +223,7 @@ class Handlers():
     def DownloadClick(self,event):
         global handlers
         handlers.Download()
+        
     def Download(self):
         global projList_obj,drive
         if(self.currentCodeFolder != "" and len(projList_obj.curselection()) > 0):
@@ -225,10 +242,11 @@ class Handlers():
             if os.path.exists(desktop+fileName):
                 os.remove(desktop+fileName)
             shutil.move(fileName,desktop)
+            menu.alertBox("Sucess","Download Complete \n Look for it on the Desktop")
     def TechnicalReport(self):
         global projList_obj,drive,studLvl_var
         if(self.currentCodeFolder != "" and len(projList_obj.curselection()) > 0):
-            print("Opening TechReport")
+            #print("Opening TechReport")
             fileName = projList_obj.get(ACTIVE)
             fileName = fileName.split(".")[0] + " Report"
             TechFolder = drive.GetFolders(studLvl_var.get())["Documents"]

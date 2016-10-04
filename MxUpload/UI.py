@@ -115,7 +115,7 @@ class Menu():
         options['filetypes'] = [('Programming Files', '.py .io .txt .sb2'),('All Files', '.*')]
         osType = platform.platform().split("-")[0]
 
-        #options['initialdir'] = os.path.expanduser("~")+"\\Desktop\\"
+        options['initialdir'] = os.path.expanduser("~")+"\\Desktop\\"
         options['parent'] = frame
         options['title'] = 'Select file to Upload'
         
@@ -123,7 +123,7 @@ class Menu():
         return path
     def drawComboBox(self,frame):
         varSelection = StringVar()
-        comboBox = ttk.Combobox(frame,textvariable = varSelection)
+        comboBox = ttk.Combobox(frame,textvariable = varSelection,state = "readonly")
         return varSelection,comboBox
     def alertBox(self,title,msg):
         showinfo(title,msg)
