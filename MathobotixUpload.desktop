@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=MxUpload
+Exec=sudo python /home/pi/MxUpload/UploadProgram.pyw
+Terminal=true
+Icon=/home/pi/MxUpload/icons/logo.ico
+Type=Application
+Categories=None;
