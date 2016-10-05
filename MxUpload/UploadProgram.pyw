@@ -246,13 +246,20 @@ class Handlers():
     def TechnicalReport(self):
         global projList_obj,drive,studLvl_var
         if(self.currentCodeFolder != "" and len(projList_obj.curselection()) > 0):
-            #print("Opening TechReport")
+            print("Opening TechReport")
             fileName = projList_obj.get(ACTIVE)
             fileName = fileName.split(".")[0] + " Report"
             TechFolder = drive.GetFolders(studLvl_var.get())["Documents"]
-            url = drive.CopyTechnicalReport(TechFolder,self.TypeName,fileName)
-            webbrowser.open(url)
+            url = drive.CopyTechnicalReport(TechFolder,self.TypeName,fileName).encode('ascii','ignore')
+            useros = platform.system()
+##            if(useros== "Windows"):
+            answer = webbrowser.open(url)
+##            else:
+##                print("x-www-browser {}".format(url))
+##                os.system("x-www-browser {}".format(url))
+
             
+            print("done ")
     def TestHook(self,*args):
         print(args) 
 #programNames = ["Codologie","Buildologie","Gamologie","K-12 STEM Club","Camps"]

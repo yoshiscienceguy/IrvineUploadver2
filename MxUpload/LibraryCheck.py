@@ -37,9 +37,9 @@ def CheckExternalLibraries(filepath = "C:/Python27/Lib/site-packages/"):
 useros = platform.system()
 if(useros== "Linux"):
     import subprocess
-    os.chdir("/home/pi/MxUpload/libs/")
+    os.chdir("/home/pi/IrvineUploadver2/MxUpload/libs/")
     subprocess.call(['python', 'setup.py', 'install'])
-    os.chdir("/home/pi/MxUpload")
+    os.chdir("/home/pi/IrvineUploadver2/MxUpload")
 else:
     CheckDnDWrapper()
     CheckExternalLibraries()

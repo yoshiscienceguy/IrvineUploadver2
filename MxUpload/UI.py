@@ -113,9 +113,13 @@ class Menu():
         options = {}
         options['defaultextension'] = '.py'
         options['filetypes'] = [('Programming Files', '.py .io .txt .sb2'),('All Files', '.*')]
-        osType = platform.platform().split("-")[0]
-
-        options['initialdir'] = os.path.expanduser("~")+"/Desktop/"
+        osType = platform.system()
+        if(osType == "Linux"):
+            options['initialdir'] = "/home/pi/"
+        else:
+            options['initialdir'] = os.path.expanduser("~")+"/Desktop/"
+        
+        print(os.path.expanduser("~")+"/Desktop/")
         options['parent'] = frame
         options['title'] = 'Select file to Upload'
         
