@@ -2,8 +2,8 @@
 Encoding=UTF-8
 Version=1.0
 Name=MxUpload
-Exec=sudo python /home/pi/MxUpload/UploadProgram.pyw
+Exec=sudo python /home/pi/IrvineUploadver2/MxUpload/UploadProgram.pyw
 Terminal=false
-Icon=/home/pi/MxUpload/icons/logo.ico
+Icon=/home/pi/IrvineUploadver2/MxUpload/icons/logo.ico
 Type=Application
 Categories=None;
