@@ -265,15 +265,9 @@ class Handlers():
                 ui.alertBox("Sucess","Now Opening")
             else:
                 drive.DownloadTechnicalReport(TechId,fileName)
-                useros = platform.system()
-                if(useros== "Windows"):
-                    userhome = os.path.expanduser('~')
-                    
-                    desktop = userhome + '\\Desktop\\'
-                else:
-                    desktop = "/home/pi/Desktop/"
-                print(desktop)
-                if os.path.exists(desktop+fileName):
+
+                desktop = "/home/pi/Desktop/"
+                if os.path.exists(desktop+fileName+".odt"):
                     os.remove(desktop+fileName+".odt")
                 shutil.move((fileName + ".odt").encode('ascii','ignore'),desktop)
                 os.system("libreoffice --writer {}".format(fileName + ".odt"))
