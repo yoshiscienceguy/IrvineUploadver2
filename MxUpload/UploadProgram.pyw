@@ -315,7 +315,7 @@ def Update():
 #MenuBar
 menubar = Menu(topPart)
 
-#hi
+#hi lol
 
 filemenu = Menu(menubar,tearoff=0)
 filemenu.add_command(label="Preferences", command=ui.root.destroy)
