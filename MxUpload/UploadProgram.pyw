@@ -300,7 +300,7 @@ programNames = drive.GetFolders(drive.ids.StudentFolder).keys()
 def Update():
     os.system("cd /home/pi/IrvineUploadver2")
     os.system("git pull")
-    
+    import subprocess
     proc = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
     print(out)
