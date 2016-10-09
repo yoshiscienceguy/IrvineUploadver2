@@ -312,6 +312,7 @@ def Update():
         
     proc = subprocess.Popen(["git pull"], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
+    os.system("git pull")
     print(out)
     if("Already" in out):
         ui.alertBox("Sucess",out)
