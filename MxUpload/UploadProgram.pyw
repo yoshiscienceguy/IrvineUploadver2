@@ -99,7 +99,8 @@ class Handlers():
                 self.Name = self.searchResults[index]
             else:
                 self.Name = studentList_obj.get()
-
+            if(self.Name == "Select Student Name"):
+                return
             #ui.root.config(cursor = "wait")
             #ui.root.update()
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
@@ -298,18 +299,24 @@ programNames = drive.GetFolders(drive.ids.StudentFolder).keys()
 
 #Menu
 def Update():
-    os.system("cd /home/pi/IrvineUploadver2")
-    os.system("git pull")
     import subprocess
     import time
+    useros = platform.system()
+    if(useros== "Windows"):
+        userhome = os.path.expanduser('~')
+        desktop = userhome + '\\Documents\\IrvineUploadver2'
+        os.system("cd "+desktop)
+        
+    else:
+        os.system("cd /home/pi/IrvineUploadver2")
+        
     proc = subprocess.Popen(["git pull"], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
     print(out)
     if("Already" in out):
         ui.alertBox("Sucess",out)
     else:
-        ui.alertBox("Sucess","Program will close in 3 seconds")
-        time.sleep(3)
+        ui.alertBox("Alert"," Press OK to shutdown the program ")
         ui.root.destroy()
     
 #MenuBar
