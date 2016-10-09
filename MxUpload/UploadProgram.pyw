@@ -260,7 +260,7 @@ class Handlers():
             url = url.encode('ascii','ignore')
             
             useros = platform.system()
-            if(useros== "Windowss"):
+            if(useros== "Windows"):
                 answer = webbrowser.open(url)
             else:
                 drive.DownloadTechnicalReport(TechId,fileName)
