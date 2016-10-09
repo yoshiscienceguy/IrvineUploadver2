@@ -262,6 +262,7 @@ class Handlers():
             useros = platform.system()
             if(useros== "Windows"):
                 answer = webbrowser.open(url)
+                ui.alertBox("Sucess","Now Opening")
             else:
                 drive.DownloadTechnicalReport(TechId,fileName)
                 useros = platform.system()
@@ -275,7 +276,8 @@ class Handlers():
                 if os.path.exists(desktop+fileName):
                     os.remove(desktop+fileName)
                 shutil.move((fileName + ".odt").encode('ascii','ignore'),desktop)
-                ui.alertBox("Sucess","Download Complete \n Look for it on the Desktop")
+                os.system("libreoffice --writer {}".format(fileName + ".odt"))
+                
                 
             print("done ")
     def TestHook(self,*args):
