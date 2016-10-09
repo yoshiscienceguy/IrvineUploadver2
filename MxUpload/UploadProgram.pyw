@@ -303,8 +303,13 @@ def Update():
     import subprocess
     proc = subprocess.Popen(["git pull"], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
-    print(out)
-    ui.alertBox("Sucess","None yet")
+    if("Already" in out):
+        ui.alertBox("Sucess",out)
+    else:
+        ui.alertBox("Sucess","Program will close in 3 seconds")
+        time.sleep(3)
+        ui.root.destroy()
+        
     
 #MenuBar
 menubar = Menu(topPart)
