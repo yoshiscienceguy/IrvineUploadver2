@@ -1,8 +1,10 @@
 import LibraryCheck
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-
-import platform, os
+from apiclient import discovery
+from apiclient.http import MediaIoBaseDownload
+import platform, os, io, httplib2
+from oauth2client import client
 ###SFID  Source Folder Id
 ##SFID = "0B5wtxWXBa7L8S2dYaEtJMXMxeUk"
 ###Codologie
@@ -72,7 +74,9 @@ class Drive():
         os.chdir(pathhome)
         print(os.getcwd())
         print("Done Authenticating")
-
+        
+        http = gauth.credentials.authorize(httplib2.Http())
+        self.service = discovery.build('drive', 'v3', http=http)
         self.drive = GoogleDrive(gauth)
         #self._updateIDs()
     def _updateIDs(self):
@@ -162,14 +166,30 @@ class Drive():
             if(not file1['mimeType'] == "application/vnd.google-apps.folder"):
                 if(name == file1['title']):
                     found = True
-                    return file1['alternateLink']
+                    return (file1['alternateLink'],file1['id'])
                     
         techReportType = self.ids.CTechnicalReport         
         if(techType == "Buildologie"):
             techReportType = self.ids.BTechnicalReport
         if(not found):
             techInfo = self.drive.auth.service.files().copy(fileId = techReportType, body={"parents":[{"kind": "drive#fileLink","id": studentFolder}], 'title': name}).execute()
-            return techInfo['alternateLink']
+            
+            return (techInfo['alternateLink'],techInfo['id'])
+    def DownloadTechnicalReport(self,file_id,fileName):
+        
+        request = self.service.files().export_media(fileId=file_id,
+                                             mimeType='application/vnd.oasis.opendocument.text')
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+            print "Download %d%%." % int(status.progress() * 100)
+        fh.seek(0)
+        with open("{}.odt".format(fileName),"wb+")as techreport:
+            techreport.write(fh.read())
+        techreport.close()
+        
     def DownloadFile(self,FileId,FileName):
         file1 = self.drive.CreateFile({'id':FileId})
         file1.GetContentFile(FileName)

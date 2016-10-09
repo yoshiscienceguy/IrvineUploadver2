@@ -11,7 +11,7 @@ def TestConnection():
         print("Please ask a Mentor for HELP")
         quit()
 
-class Menu():
+class UI():
     def __init__(self):
         self.root = Tk()
         #self.handlers = Handlers()
