@@ -270,7 +270,7 @@ class Handlers():
                 if os.path.exists(desktop+filename):
                     os.remove(desktop+filename)
                 shutil.move(filename,desktop)
-                os.system("libreoffice --writer {}".format(filename))
+                os.system("libreoffice --writer "+filename)
                 
                 
             print("done ")
