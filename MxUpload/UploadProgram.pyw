@@ -297,7 +297,13 @@ ui.drawMessage(topPart,"Welcome to MxUpload Program",fontSize = 20)
 programNames = drive.GetFolders(drive.ids.StudentFolder).keys()
 
 #Menu
-def hello():
+def Update():
+    os.system("cd /home/pi/IrvineUploadver2")
+    os.system("git pull")
+    
+    proc = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE, shell=True)
+    (out, err) = proc.communicate()
+    print(out)
     ui.alertBox("Sucess","None yet")
     
 #MenuBar
@@ -306,12 +312,12 @@ menubar = Menu(topPart)
 
 
 filemenu = Menu(menubar,tearoff=0)
-filemenu.add_command(label="Preferences", command=hello)
+filemenu.add_command(label="Preferences", command=ui.root.destroy)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=ui.root.destroy)
 
 editmenu = Menu(menubar,tearoff=0)
-editmenu.add_command(label="Update Program", command=hello)
+editmenu.add_command(label="Update Program", command=Update)
 editmenu.add_separator()
 editmenu.add_command(label="Create Student", command=ui.root.quit)
 
