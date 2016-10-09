@@ -318,7 +318,7 @@ def Update():
     if("Already" in out):
         ui.alertBox("Sucess",out)
     else:
-        ui.alertBox("Alert"," Press OK to shutdown the program ")
+        ui.alertBox("Alert","There is an Update\nProgram must be shutdown and opened again\nPress OK to shutdown the program ")
         ui.root.destroy()
     
 #MenuBar
