@@ -309,7 +309,6 @@ def Update():
         ui.alertBox("Sucess","Program will close in 3 seconds")
         time.sleep(3)
         ui.root.destroy()
-        
     
 #MenuBar
 menubar = Menu(topPart)
