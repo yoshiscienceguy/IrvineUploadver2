@@ -274,7 +274,7 @@ class Handlers():
                     desktop = "/home/pi/Desktop/"
                 print(desktop)
                 if os.path.exists(desktop+fileName):
-                    os.remove(desktop+fileName)
+                    os.remove(desktop+fileName+".odt")
                 shutil.move((fileName + ".odt").encode('ascii','ignore'),desktop)
                 os.system("libreoffice --writer {}".format(fileName + ".odt"))
                 
