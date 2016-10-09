@@ -301,8 +301,10 @@ def Update():
     os.system("cd /home/pi/IrvineUploadver2")
     os.system("git pull")
     import subprocess
+    import time
     proc = subprocess.Popen(["git pull"], stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
+    print(out)
     if("Already" in out):
         ui.alertBox("Sucess",out)
     else:
@@ -313,7 +315,7 @@ def Update():
 #MenuBar
 menubar = Menu(topPart)
 
-#small comment
+#hi
 
 filemenu = Menu(menubar,tearoff=0)
 filemenu.add_command(label="Preferences", command=ui.root.destroy)
