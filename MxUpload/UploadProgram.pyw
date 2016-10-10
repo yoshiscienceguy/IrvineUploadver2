@@ -277,7 +277,62 @@ class Handlers():
                 
             print("done ")
     def TestHook(self,*args):
-        print(args) 
+        print("hi")
+    def CreateStudent(self):
+        global ui, handlers, drive
+
+        self.newStudentWindow = Toplevel(ui.root)
+        self.newStudentWindow.wm_title("New Student Window")
+
+        
+        self.newStudentName_obj, self.newStudentName_var = ui.drawTextBox(self.newStudentWindow,"Enter name...")
+        #self.newStudentName_obj.focus_set()
+        self.newStudentName_obj.pack()
+        self.newStudentName_obj.bind("<Button-1>",lambda objs: self.newStudentName_var.set(""))
+        
+        self.newStudentType = ui.drawLabelFrame(self.newStudentWindow,"Select Type of Student")
+        self.firstOptions = Frame(self.newStudentType)
+        self.firstOptions.pack(side = TOP)
+
+        self.newStudentLevel = ui.drawLabelFrame(self.newStudentWindow,"Select Student Level")
+        
+        self.secondOptions =Frame(self.newStudentLevel)
+        self.secondOptions.pack(side = BOTTOM)
+        options = [("Buildologie",1),("Codologie",2),("Gamologie",3),("K-12 STEM",4)]
+
+        self.NewStudentTypes_obj, self.NewStudentTypes_var = ui.drawRadioButtons(self.firstOptions,options,c = handlers.NewStudentSelectType,turnOn = True)
+        
+        self.submit_box = ui.drawButton(self.secondOptions," Make Student Folder ",handlers.MakeNewStudent,specialWidth = 30)
+    def NewStudentSelectType(self):
+        global ui, handlers, drive
+        
+        optionsB = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3)]
+        optionsC = [("Codologie I - (Beginner)",1),("Codologie II - (Intermediate)",2),("Codologie III - (Advance)",3)]
+        optionsG = [("Gamologie I - Scratch",1), ("Gamologie II - Python",2), ("Gamologie - Unity",3)]
+        
+        optionsSTEM = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3),
+                       ("Codologie I - (Beginner)",4),("Codologie II - (Intermediate)",5),("Codologie III - (Advance)",6),
+                       ("Gamologie I - Scratch",7), ("Gamologie II - Python",8), ("Gamologie - Unity",9)
+                      ]
+        try:
+            for level in self.NewStudentclass_obj:
+                    level.pack_forget()
+        except:
+            pass
+        if(self.NewStudentTypes_var.get() == '1'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsB,turnOn = True,sSide =TOP)
+        elif(self.NewStudentTypes_var.get() == '2'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsC,turnOn = True,sSide =TOP)
+        elif(self.NewStudentTypes_var.get() == '3'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsG,turnOn = True,sSide =TOP)
+        elif(self.NewStudentTypes_var.get() == '4'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsSTEM,turnOn = True,sSide =TOP)
+
+        
+        self.submit_box.pack(side = BOTTOM,padx = 10,pady = 20)
+    def MakeNewStudent(self):
+        print("made")
+
 #programNames = ["Codologie","Buildologie","Gamologie","K-12 STEM Club","Camps"]
 
 drive = Drive()
@@ -314,12 +369,12 @@ def Update():
     (out, err) = proc.communicate()
     os.system("git pull")
     print(out)
-    #lil comment chibi
     if("Already" in out):
         ui.alertBox("Sucess",out)
     else:
         ui.alertBox("Alert","There is an Update\nProgram must be shutdown and opened again\nPress OK to shutdown the program ")
         ui.root.destroy()
+
     
 #MenuBar
 menubar = Menu(topPart)
@@ -334,7 +389,7 @@ filemenu.add_command(label="Exit", command=ui.root.destroy)
 editmenu = Menu(menubar,tearoff=0)
 editmenu.add_command(label="Update Program", command=Update)
 editmenu.add_separator()
-editmenu.add_command(label="Create Student", command=ui.root.quit)
+editmenu.add_command(label="Create Student", command=handlers.CreateStudent)
 
 menubar.add_cascade(label="File", menu=filemenu)
 menubar.add_cascade(label="Edit", menu=editmenu)

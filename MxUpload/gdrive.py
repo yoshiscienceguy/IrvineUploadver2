@@ -215,7 +215,10 @@ class Drive():
             idtoReturn = newFolder['id']
         else:
             idtoReturn,Link = returned
-        return idtoReturn  
+        return idtoReturn
+    def CreateStudentFolder(self,TypeID,StudentName):
+        
+        pass
 #gd = Drive()
 #gd.CreateFolder(gd.ids.DocTemplates,"testingFolder")
 #gd.GetFiles(gd.ids.DocTemplates)

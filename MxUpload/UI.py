@@ -46,7 +46,7 @@ class UI():
 
         else: 
             return submit
-    def drawRadioButtons(self,frame,options,c = None,excluded = None,turnOn = False):
+    def drawRadioButtons(self,frame,options,c = None,excluded = None,turnOn = False,sSide = LEFT):
         
         var = StringVar()
         Buttons = []
@@ -54,7 +54,7 @@ class UI():
             if(excluded == None):
                 for texts, option in options:
                     rb = ttk.Radiobutton(frame, text = texts, variable = var, value = option, command = c)
-                    rb.pack(side = LEFT, anchor = W,padx = 10)
+                    rb.pack(side = sSide, anchor = W,padx = 10)
                     if(not turnOn):
                         rb.selected = "Off"
                         rb['state'] = "disabled"
@@ -69,7 +69,7 @@ class UI():
                     else:
                         rb = Radiobutton(frame, text = texts, variable = var, value = option, command = c)
                     
-                    rb.pack(side = LEFT, anchor = W,padx = 10)
+                    rb.pack(side = sSide, anchor = W,padx = 10)
                     rb.selected = "Off"
                     Buttons.append(rb)
                 var.set(options[0][1])
