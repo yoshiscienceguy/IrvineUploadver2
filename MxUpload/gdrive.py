@@ -216,9 +216,21 @@ class Drive():
         else:
             idtoReturn,Link = returned
         return idtoReturn
-    def CreateStudentFolder(self,TypeID,StudentName):
-        
-        pass
+    def CreateStudentFolder(self,StudentName,StudentType,StudentLevel):
+        StudentFolderID = ""
+        if(StudentType == "Buildologie"):
+            StudentFolderID = self.CreateFolder(self.ids.Buildologie,StudentName)
+        if(StudentType == "Codologie"):
+            StudentFolderID = self.CreateFolder(self.ids.Codologie,StudentName)
+        if(StudentType == "Gamologie"):
+            StudentFolderID = self.CreateFolder(self.ids.Gamologie,StudentName)
+        if(StudentType == "K-12 STEM"):
+            StudentFolderID = self.CreateFolder(self.ids.KStemClub,StudentName)
+
+        LevelID = self.CreateFolder(StudentFolderID,StudentLevel)
+        self.CreateFolder(LevelID,"Code")
+        self.CreateFolder(LevelID,"Documents")
+        self.CreateFolder(LevelID,"Media")
 #gd = Drive()
 #gd.CreateFolder(gd.ids.DocTemplates,"testingFolder")
 #gd.GetFiles(gd.ids.DocTemplates)

@@ -2,6 +2,21 @@
 from UI import *
 import webbrowser, os, shutil
 from libs.tkdndWrapper import TkDND
+
+ClassLevels = {'1':"Buildolgie I - Elementary",
+               '2':"Buildologie II - Junior High",
+               '3':"Buildologie - High School",
+               '4':"Codologie I - Beginner",
+               '5':"Codologie II - Intermediate",
+               '6':"Codologie III - Advance",
+               '7':"Gamologie I - Scratch",
+               '8':"Gamologie II - Python",
+               '9':"Gamologie - Unity"}
+
+ClassNames = {'1':"Buildologie",
+              '2':"Codologie",
+              '3':"Gamologie",
+              '4':"K-12 STEM"}
 class Handlers():
     def __init__(self):
         self.TypeID = ""
@@ -38,8 +53,8 @@ class Handlers():
         resultText_var.set("Selected Student: " + self.Name)
         self.getStudentNames()
         search_obj['state'] = 'normal'
-        selectStudent['state']='normal'
-        studentList_obj['state']='normal'
+        selectStudent['state']='readonly'
+        studentList_obj['state']='readonly'
     def getStudentNames(self):
         global drive,studentList_obj
         self.studentNamesIds = drive.GetFolders(self.TypeID)
@@ -303,12 +318,13 @@ class Handlers():
         self.NewStudentTypes_obj, self.NewStudentTypes_var = ui.drawRadioButtons(self.firstOptions,options,c = handlers.NewStudentSelectType,turnOn = True)
         
         self.submit_box = ui.drawButton(self.secondOptions," Make Student Folder ",handlers.MakeNewStudent,specialWidth = 30)
+
     def NewStudentSelectType(self):
         global ui, handlers, drive
         
         optionsB = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3)]
-        optionsC = [("Codologie I - (Beginner)",1),("Codologie II - (Intermediate)",2),("Codologie III - (Advance)",3)]
-        optionsG = [("Gamologie I - Scratch",1), ("Gamologie II - Python",2), ("Gamologie - Unity",3)]
+        optionsC = [("Codologie I - (Beginner)",4),("Codologie II - (Intermediate)",5),("Codologie III - (Advance)",6)]
+        optionsG = [("Gamologie I - Scratch",7), ("Gamologie II - Python",8), ("Gamologie - Unity",9)]
         
         optionsSTEM = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3),
                        ("Codologie I - (Beginner)",4),("Codologie II - (Intermediate)",5),("Codologie III - (Advance)",6),
@@ -331,7 +347,14 @@ class Handlers():
         
         self.submit_box.pack(side = BOTTOM,padx = 10,pady = 20)
     def MakeNewStudent(self):
-        print("made")
+        global ui
+        studentName = self.newStudentName_var.get()
+        studentType = self.NewStudentTypes_var.get()
+        studentLevel = self.NewStudentclass_var.get()
+        
+        drive.CreateStudentFolder(studentName,ClassNames[studentType],ClassLevels[studentLevel])
+        ui.alertBox("Sucess","Student Folder Created")
+        self.newStudentWindow.destroy()
 
 #programNames = ["Codologie","Buildologie","Gamologie","K-12 STEM Club","Camps"]
 
