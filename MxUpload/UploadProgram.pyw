@@ -88,14 +88,24 @@ class Handlers():
         global search_var
         if(self.searchTerm == ""):
             search_var.set("")
-            
+        print(event.keycode)
         if(self.TypeID != ""):
-            if(not event.keycode in [8]):
-                if(event.keycode != 13):
+            useros = platform.system()
+            if(useros== "Windows"):
+                if(event.keycode in [9,16,17,18,27,12,113,114,115,116,117,118,119,120,121,122]):
+                    pass 
+                elif(event.keycode in [8]):
+                    self.searchTerm = self.searchTerm[:-1]
+                else:
                     self.searchTerm += str(event.char)
             else:
-                self.searchTerm = self.searchTerm[:-1]
-        
+                if(event.keycode in [8,36,64]):
+                    pass 
+                elif(event.keycode in [22]):
+                    self.searchTerm = self.searchTerm[:-1]
+                else:
+                    self.searchTerm += str(event.char)
+        print(self.searchTerm)
         self.updateStudentNames()
     def clearSearch(self,event):
         global search_var
@@ -274,21 +284,22 @@ class Handlers():
             TechFolder = drive.GetFolders(studLvl_var.get())["Documents"]
             url,TechId = drive.CopyTechnicalReport(TechFolder,self.TypeName,fileName)
             url = url.encode('ascii','ignore')
-            
+            print(url)
             useros = platform.system()
             if(useros== "Windows"):
                 answer = webbrowser.open(url)
                 ui.alertBox("Sucess","Now Opening")
             else:
-                drive.DownloadTechnicalReport(TechId,fileName)
-                filename = fileName.encode('ascii','ignore')+".odt"
-                desktop = "/home/pi/Desktop/"
-                if os.path.exists(desktop+filename):
-                    os.remove(desktop+filename)
-                shutil.move(filename,desktop)
-                os.system("cd /home/pi/Desktop/")
-                os.system("libreoffice --writer \""+desktop+filename+"\"")
-                os.system("cd /home/pi/IrvineUploadver2/MxUpload")
+                answer = webbrowser.open(url)
+##                drive.DownloadTechnicalReport(TechId,fileName)
+##                filename = fileName.encode('ascii','ignore')+".odt"
+##                desktop = "/home/pi/Desktop/"
+##                if os.path.exists(desktop+filename):
+##                    os.remove(desktop+filename)
+##                shutil.move(filename,desktop)
+##                os.system("cd /home/pi/Desktop/")
+##                os.system("libreoffice --writer \""+desktop+filename+"\"")
+##                os.system("cd /home/pi/IrvineUploadver2/MxUpload")
                 
             print("done ")
     def TestHook(self,*args):
