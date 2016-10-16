@@ -287,7 +287,7 @@ class Handlers():
                     os.remove(desktop+filename)
                 shutil.move(filename,desktop)
                 os.system("cd /home/pi/Desktop/")
-                os.system("libreoffice --writer "+"'"+desktop+filename+"'")
+                os.system("libreoffice --writer \""+desktop+filename+"\"")
                 os.system("cd /home/pi/IrvineUploadver2/MxUpload")
                 
             print("done ")
