@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo pip install google-api-python-client
+sudo pip install pydrive --upgrade
 sudo apt-get install tkdnd
 sudo apt-get install python-pip python-dev ipython
 sudo apt-get install bluetooth libbluetooth-dev
