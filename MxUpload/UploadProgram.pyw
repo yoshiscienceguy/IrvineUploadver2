@@ -282,6 +282,8 @@ class Handlers():
             fileName = projList_obj.get(ACTIVE)
             fileName = fileName.split(".")[0] + " Report"
             TechFolder = drive.GetFolders(studLvl_var.get())["Documents"]
+            if(TechFolder == None):
+                TechFolder = drive.GetFolders(studLvl_var.get())["Document"]
             url,TechId = drive.CopyTechnicalReport(TechFolder,self.TypeName,fileName)
             url = url.encode('ascii','ignore')
             print(url)
