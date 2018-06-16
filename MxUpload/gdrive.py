@@ -1,8 +1,8 @@
-import LibraryCheck
+#import LibraryCheck
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from apiclient import discovery
-from apiclient.http import MediaIoBaseDownload
+from googleapiclient import discovery
+from googleapiclient.http import MediaIoBaseDownload
 import platform, os, io, httplib2
 from oauth2client import client
 ###SFID  Source Folder Id
