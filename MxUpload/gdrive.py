@@ -53,7 +53,7 @@ class Drive():
         gauth = GoogleAuth()
         import os
         directory = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(directory+"\\credentials\\")
+        os.chdir(directory+"/credentials/")
         
         CurrentOS = platform.system()
 
