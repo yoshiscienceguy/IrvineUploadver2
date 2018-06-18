@@ -52,10 +52,11 @@ class Drive():
         print("Authenticating")
         gauth = GoogleAuth()
         import os
-        pathhome = os.getcwd()
-        os.chdir(pathhome+"/credentials/")
-        CurrentOS = platform.system()
+        directory = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(directory+"\\credentials\\")
         
+        CurrentOS = platform.system()
+
         if(CurrentOS == "Linux"):
             gauth.LoadCredentialsFile("mycreds.txt")
         else:
@@ -71,14 +72,14 @@ class Drive():
             gauth.SaveCredentialsFile("mycreds.txt")
         else:
             gauth.SaveCredentialsFile("mycreds.txt")
-        os.chdir(pathhome)
-        print(os.getcwd())
+
         print("Done Authenticating")
         
         http = gauth.credentials.authorize(httplib2.Http())
         self.service = discovery.build('drive', 'v3', http=http)
         self.drive = GoogleDrive(gauth)
         #self._updateIDs()
+    
     def _updateIDs(self):
         folders = self.GetFolders()
         for folder in folders:
@@ -231,7 +232,7 @@ class Drive():
         self.CreateFolder(LevelID,"Code")
         self.CreateFolder(LevelID,"Documents")
         self.CreateFolder(LevelID,"Media")
-#gd = Drive()
+gd = Drive()
 #gd.CreateFolder(gd.ids.DocTemplates,"testingFolder")
 #gd.GetFiles(gd.ids.DocTemplates)
 #gd.CopyTechnicalReport("0B5wtxWXBa7L8S0s1dUxXX0pmNTQ","Yolo")
