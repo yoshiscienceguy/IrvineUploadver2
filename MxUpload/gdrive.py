@@ -24,8 +24,10 @@ class IDs():
         self.StudentFolder = "0B5wtxWXBa7L8S2dYaEtJMXMxeUk"
         self.Codologie = "0B2a5Zc1PcnIRQjZCc2ZjSGlfU2M"
         self.Buildologie = "0B5wtxWXBa7L8ZUhLZWc0akpJajA"
+        self.Fabologie = "1aryqaoavQKcgY-GqrurZ2_-tkNfTQg1Z"
         self.Gamologie = "0B5wtxWXBa7L8eEYxQTZCX0JKZ3M"
         self.KStemClub = "0B-OKkANrBIvUWkVpX19aRkVScFE"
+        self.Appologie = "1AG34qThiht_6L2XJW3dFK5jYG3djmuqd"
         self.DocTemplates = "0B5wtxWXBa7L8a1VjU0tGNElmdVk"
         self.CTechnicalReport = "1Bx-_MCr9jqiVTkm7UcSDwHnwKmWk-1YitOgRctbpDzw"
         self.BTechnicalReport = "1p81KbPvAioTTcPtsypfTVm6gNcvrnZuaD5Uz8iuHrsc"
@@ -90,9 +92,13 @@ class Drive():
             if("Camps" in folder):
                 self.ids.Camps = folders[folder]
             if("Gameologie" in folder):
-                self.ids.Gameologie = folders[folder]
+                self.ids.Gamologie = folders[folder]
             if("Buildologie" in folder):
                 self.ids.Buildologie = folders[folder]
+            if("Fabologie" in folder):
+                self.ids.Fabologie = folders[folder]
+            if("Appologie" in folder):
+                self.ids.Fabologie = folders[folder]
         folders = self.GetFolders(self.ids.Codologie)
         for folder in folders:
             if("Template" in folder):
@@ -227,6 +233,10 @@ class Drive():
             StudentFolderID = self.CreateFolder(self.ids.Gamologie,StudentName)
         if(StudentType == "K-12 STEM"):
             StudentFolderID = self.CreateFolder(self.ids.KStemClub,StudentName)
+        if(StudentType == "Fabologie"):
+            StudentFolderID = self.CreateFolder(self.ids.Fabologie,StudentName)
+        if(StudentType == "Appologie"):
+            StudentFolderID = self.CreateFolder(self.ids.Appologie,StudentName)
 
         LevelID = self.CreateFolder(StudentFolderID,StudentLevel)
         self.CreateFolder(LevelID,"Code")

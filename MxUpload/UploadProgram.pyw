@@ -1,22 +1,35 @@
 #1:40 PM 8/13/2016
 from UI import *
 import webbrowser, os, shutil
-from libs.tkdndWrapper import TkDND
+#from libs.tkdndWrapper import TkDND
 
-ClassLevels = {'1':"Buildolgie I - Elementary",
-               '2':"Buildologie II - Junior High",
-               '3':"Buildologie - High School",
-               '4':"Codologie I - Beginner",
-               '5':"Codologie II - Intermediate",
-               '6':"Codologie III - Advance",
-               '7':"Gamologie I - Scratch",
-               '8':"Gamologie II - Python",
-               '9':"Gamologie - Unity"}
+ClassLevels = {'1':"Buildolgie I - NXT",
+               '2':"Buildologie II - EV3",
+               '3':"Buildologie - Advanced Robotics",
+               
+               '4':"Fabologie I - Raspberry Pi",
+               '5':"Fabologie II - Arduino",
+               '6':"Fabologie - Advanced Manufacturing",
+               
+               '7':"Codologie I - Python",
+               '8':"Codologie II - Java",
+               '9':"Codologie III - C++",
+               '10':"Codologie IV - AI",
+               
+               '11':"Gamologie I - Scratch",
+               '12':"Gamologie - Unity",
+               
+               '13':"Appologie - iOS",
+               '14':"Appologie - Android"
+               }
+
 
 ClassNames = {'1':"Buildologie",
-              '2':"Codologie",
-              '3':"Gamologie",
-              '4':"K-12 STEM"}
+              '2':"Fabologie",
+              '3':"Codologie",
+              '4':"Gamologie",
+              '5':"Appologie",
+              '6':"K-12 STEM"}
 class Handlers():
     def __init__(self):
         self.TypeID = ""
@@ -184,8 +197,8 @@ class Handlers():
             submit_box = ui.drawButton(self.frame1," Upload ",handlers.UploadBatch,specialWidth = 15)
             submit_box.pack(side = BOTTOM,padx = 10,pady = 20)
                                                                     
-            dnd = TkDND(self.uploadbox)
-            dnd.bindtarget(self.filepath_obj, handlers.parseDragNDrop,"text/uri-list")
+            #dnd = TkDND(self.uploadbox)
+            #dnd.bindtarget(self.filepath_obj, handlers.parseDragNDrop,"text/uri-list")
 
             filesFrame = Frame(self.uploadWindow)
             filesFrame.pack()
@@ -271,9 +284,21 @@ class Handlers():
             else:
                 desktop = "/home/pi/Desktop/"
             print(desktop)
-            if os.path.exists(desktop+fileName):
-                os.remove(desktop+fileName)
-            shutil.move(fileName,desktop)
+            counter = 2
+            extension = fileName.split(".")
+            
+            fileName = "".join(extension[:-1])
+            extension = "." + extension[-1]
+            copyName = fileName
+            while True:
+                if os.path.exists(desktop+copyName+extension):
+                    copyName = fileName + str(counter)
+                    counter += 1
+                    #os.remove(desktop+fileName)
+                else:
+                    print(fileName+extension)
+                    shutil.move(fileName+extension,desktop+copyName+extension)
+                    break
             ui.alertBox("Sucess","Download Complete \n Look for it on the Desktop")
     def TechnicalReport(self):
         global projList_obj,drive,studLvl_var
@@ -326,7 +351,7 @@ class Handlers():
         
         self.secondOptions =Frame(self.newStudentLevel)
         self.secondOptions.pack(side = BOTTOM)
-        options = [("Buildologie",1),("Codologie",2),("Gamologie",3),("K-12 STEM",4)]
+        options = [("Buildologie",1),("Fabologie",2),("Gamologie",3),("Codologie",4),("Appologie",5),("K-12 STEM",6)]
 
         self.NewStudentTypes_obj, self.NewStudentTypes_var = ui.drawRadioButtons(self.firstOptions,options,c = handlers.NewStudentSelectType,turnOn = True)
         
@@ -335,13 +360,12 @@ class Handlers():
     def NewStudentSelectType(self):
         global ui, handlers, drive
         
-        optionsB = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3)]
-        optionsC = [("Codologie I - (Beginner)",4),("Codologie II - (Intermediate)",5),("Codologie III - (Advance)",6)]
-        optionsG = [("Gamologie I - Scratch",7), ("Gamologie II - Python",8), ("Gamologie - Unity",9)]
-        
-        optionsSTEM = [("Buildolgie I - (Elementary)",1),("Buildologie II - (Junior High)",2), ("Buildologie - (High School)",3),
-                       ("Codologie I - (Beginner)",4),("Codologie II - (Intermediate)",5),("Codologie III - (Advance)",6),
-                       ("Gamologie I - Scratch",7), ("Gamologie II - Python",8), ("Gamologie - Unity",9)
+        optionsB = [("Buildolgie I - (NXT)",1),("Buildologie II - (EV3)",2), ("Buildologie - (Advanced Robotics)",3)]
+        optionsF = [("Fabologie I - (Raspberry Pi)",4),("Fabologie II - (Arduino)",5),("Fabologie III - (Advanced Manufacturing)",6)]
+        optionsC = [("Codologie I - (Python)",7),("Codologie II - (Java)",8),("Codologie III - (C++)",9),("Codologie IV - (AI)",10)]
+        optionsG = [("Gamologie I - Scratch",11),("Gamologie - Unity",12)]
+        optionsA = [("Appologie - iOS",13),("Appologie - Android",14)]
+        optionsSTEM = [("Buildolgie",1),("Fabologie",2), ("Codologie",3),("Gamologie",4),("Appologie",5)
                       ]
         try:
             for level in self.NewStudentclass_obj:
@@ -351,10 +375,14 @@ class Handlers():
         if(self.NewStudentTypes_var.get() == '1'):
             self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsB,turnOn = True,sSide =TOP)
         elif(self.NewStudentTypes_var.get() == '2'):
-            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsC,turnOn = True,sSide =TOP)
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsF,turnOn = True,sSide =TOP)
         elif(self.NewStudentTypes_var.get() == '3'):
             self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsG,turnOn = True,sSide =TOP)
         elif(self.NewStudentTypes_var.get() == '4'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsC,turnOn = True,sSide =TOP)
+        elif(self.NewStudentTypes_var.get() == '5'):
+            self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsA,turnOn = True,sSide =TOP)
+        elif(self.NewStudentTypes_var.get() == '6'):
             self.NewStudentclass_obj, self.NewStudentclass_var = ui.drawRadioButtons(self.secondOptions,optionsSTEM,turnOn = True,sSide =TOP)
 
         
@@ -364,7 +392,9 @@ class Handlers():
         studentName = self.newStudentName_var.get()
         studentType = self.NewStudentTypes_var.get()
         studentLevel = self.NewStudentclass_var.get()
-        
+        print(studentName)
+        print(ClassNames[studentType])
+        print(ClassLevels[studentLevel])
         drive.CreateStudentFolder(studentName,ClassNames[studentType],ClassLevels[studentLevel])
         ui.alertBox("Sucess","Student Folder Created")
         self.newStudentWindow.destroy()
@@ -383,7 +413,7 @@ middlePart.pack(fill = BOTH,padx = 20, pady = 20)
 bottomPart = Frame(ui.root,width = 300)
 bottomPart.pack()
 
-ui.drawMessage(topPart,"Welcome to MxUpload Program",fontSize = 20)
+ui.drawMessage(topPart,"Welcome to BBUpload Program",fontSize = 20)
 
 #Get Official Names on Drive
 programNames = drive.GetFolders(drive.ids.StudentFolder).keys()
@@ -423,8 +453,8 @@ filemenu.add_separator()
 filemenu.add_command(label="Exit", command=ui.root.destroy)
 
 editmenu = Menu(menubar,tearoff=0)
-editmenu.add_command(label="Update Program", command=Update)
-editmenu.add_separator()
+#editmenu.add_command(label="Update Program", command=Update)
+#editmenu.add_separator()
 editmenu.add_command(label="Create Student", command=handlers.CreateStudent)
 
 menubar.add_cascade(label="File", menu=filemenu)
@@ -492,8 +522,8 @@ projectNamesFrame.pack(fill = BOTH,side = LEFT)
 projects_frame,projList_obj = ui.drawMenu(projectNamesFrame,[])
 projList_obj.bind("<Double-Button-1>",handlers.DownloadClick)
 projects_frame.pack(fill = BOTH,padx = 20,pady = 20) 
-dnd = TkDND(projects_frame)
-dnd.bindtarget(projList_obj, handlers.parseDragNDrop,"text/uri-list")
+#dnd = TkDND(projects_frame)
+#dnd.bindtarget(projList_obj, handlers.parseDragNDrop,"text/uri-list")
  
 #Fifth Frame
 #action = ui.drawLabelFrame(middlePart,"What do you want to do?")
