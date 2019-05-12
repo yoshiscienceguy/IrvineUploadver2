@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Version=1.0
-Name=MxUpload
-Exec=sudo python /home/pi/IrvineUploadver2/MxUpload/UploadProgram.pyw
+Name=BBUpload
+Exec=sudo python /home/pi/IrvineUploadver2/BBUpload/UploadProgram.pyw
 Terminal=false
-Icon=/home/pi/IrvineUploadver2/MxUpload/icons/logo.ico
+Icon=/home/pi/IrvineUploadver2/BBUpload/icons/logo.ico
 Type=Application
 Categories=None;
