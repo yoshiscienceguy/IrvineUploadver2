@@ -55,6 +55,7 @@ class Handlers():
         self.pathData = {}
         self.IsUploadMenu = False
     def defineStudentType(self,*args):
+        return
         global dropDown_var,drive,search_var,studentsList_var
         self.__init__()
         self.TypeName = dropDown_var.get()
@@ -66,8 +67,8 @@ class Handlers():
         resultText_var.set("Selected Student: " + self.Name)
         self.getStudentNames()
         search_obj['state'] = 'normal'
-        selectStudent['state']='readonly'
-        studentList_obj['state']='readonly'
+        #selectStudent['state']='readonly'
+        #studentList_obj['state']='readonly'
     def getStudentNames(self):
         global drive,studentList_obj
         self.studentNamesIds = drive.GetFolders(self.TypeID)
@@ -102,8 +103,9 @@ class Handlers():
         if(self.searchTerm == ""):
             search_var.set("")
         print(event.keycode)
-        if(self.TypeID != ""):
+        if(self.TypeID == ""):
             useros = platform.system()
+            print(useros)
             if(useros== "Windows"):
                 if(event.keycode in [9,16,17,18,27,12,113,114,115,116,117,118,119,120,121,122]):
                     pass 
@@ -462,15 +464,15 @@ menubar.add_cascade(label="Edit", menu=editmenu)
 ui.root.config(menu=menubar)
 
 #First Frame
-studentType = ui.drawLabelFrame(middlePart,"Student Type")
-textBox_obj,textBox_var = ui.drawMessage(studentType,"Type: ",color = "black")
-textBox_obj.pack(side = LEFT,padx = 20)
-#dropDown_obj,dropDown_var = ui.drawDropDown(studentType,handlers.defineStudentType,programNames)
-dropDown_var,dropDown_obj = ui.drawComboBox(studentType)
-dropDown_var.set("Select Student Type")
-dropDown_obj.bind('<<ComboboxSelected>>',handlers.defineStudentType)
-dropDown_obj['values'] = programNames
-dropDown_obj.pack(side = LEFT,padx = (20,5), pady = 20)
+##studentType = ui.drawLabelFrame(middlePart,"Student Type")
+##textBox_obj,textBox_var = ui.drawMessage(studentType,"Type: ",color = "black")
+##textBox_obj.pack(side = LEFT,padx = 20)
+###dropDown_obj,dropDown_var = ui.drawDropDown(studentType,handlers.defineStudentType,programNames)
+##dropDown_var,dropDown_obj = ui.drawComboBox(studentType)
+##dropDown_var.set("Select Student Type")
+##dropDown_obj.bind('<<ComboboxSelected>>',handlers.defineStudentType)
+##dropDown_obj['values'] = programNames
+##dropDown_obj.pack(side = LEFT,padx = (20,5), pady = 20)
 
 
 #Second Frame
@@ -480,7 +482,11 @@ searchFrame.pack(fill = BOTH,pady=(20,0))
 
 search_obj, search_var = ui.drawTextBox(searchFrame,"Enter name...")
 #search_obj.focus_set()
-search_obj['state'] = 'disabled'
+
+
+search_obj['state'] = 'normal'
+
+#search_obj['state'] = 'disabled'
 search_obj.bind("<Key>",handlers.search)
 search_obj.bind("<Button-1>",handlers.clearSearch)
 search_obj.pack(side = RIGHT,padx = (5,20))
@@ -503,11 +509,11 @@ studentList_obj.bind('<<ComboboxSelected>>',handlers.ChooseStudent)
 #studentList_obj.bind("<Double-Button-1>",handlers.ChooseStudent)
 studentList_obj.pack(fill = BOTH,padx = 20,pady = 20)  
 #students_frame.pack(fill = BOTH,padx = 20,pady = 20)            
-studentList_obj['state']='disabled'
+#studentList_obj['state']='disabled'
 
 selectStudent = ui.drawButton(studentNamesFrame,"Select",handlers.ChooseStudentButton,specialWidth= 15)
 selectStudent.pack(side = RIGHT,pady = (0,5),padx = 20)
-selectStudent['state']='disabled'
+#selectStudent['state']='disabled'
 #Third Frame
 studentInfo = ui.drawLabelFrame(middlePart,"Student Information")
 studentLevelFrame = Frame(studentInfo)
@@ -540,4 +546,11 @@ techreportButton.pack(padx = 20, pady = 10,ipadx = 10)
 uploadButton['state']='disabled'
 downloadButton['state']='disabled'
 techreportButton['state']='disabled'
+
+handlers.clearSearch(None)
+studentsList_var.set("Select Student Name")
+search_var.set("Enter name...")
+resultText_var.set("Selected Student: " + handlers.Name)
+handlers.getStudentNames()
+
 ui.root.mainloop()
