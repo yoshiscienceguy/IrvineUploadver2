@@ -131,7 +131,7 @@ class Handlers():
         handlers.ChooseStudent(None)
     def ChooseStudent(self,event):
         global drive, handlers,studentList_obj,studentsList_var,resultText_var,studLvl_objs,studLvl_var
-        if(self.TypeID != ""):
+        if(self.TypeID == ""):
             if(self.searchTerm == ""):
                 self.searchResults = self.studentNamesLocal
             index = studentList_obj.current()
@@ -145,16 +145,26 @@ class Handlers():
             #ui.root.update()
             self.ID,dummy = drive._GetFolderInfo(self.Name,self.TypeID)
             resultText_var.set("Selected Student: " + self.Name)
+
             self.studentLevels = drive.GetFolders(self.ID)
-            levels = sorted(self.studentLevels)
+
+   
+
             radiobuttons = []
-            for level in levels:
-                radiobuttons.append((level,self.studentLevels[level]))
-                codeFolder = drive.GetFolders(self.studentLevels[level])["Code"]
-                self.codeFolders [self.studentLevels[level]] = codeFolder
-                self.studentProjects[self.studentLevels[level]] = drive.GetAllTypes(codeFolder)
-            for level in studLvl_objs:
-                level.pack_forget()
+            for studentClass in self.studentLevels:
+                print(self.studentLevels[studentClass])
+                levels = drive.GetFolders(self.studentLevels[studentClass])
+                for level in levels:
+                    print(level)
+                    try:
+                        radiobuttons.append((level,levels[level]))
+                        codeFolder = drive.GetFolders(levels[level])["Code"]
+                        self.codeFolders [levels[level]] = codeFolder
+                        self.studentProjects[levels[level]] = drive.GetAllTypes(codeFolder)
+                    except:
+                        print("Folder Misconfigured.  Check Google Drive")
+                for level in studLvl_objs:
+                    level.pack_forget()
             studLvl_objs,studLvl_var = ui.drawRadioButtons (studentLevelFrame,radiobuttons,c = handlers.RadioSelect,turnOn = True)
             self.LevelID = studLvl_var.get()
             self.studentProjectsLocal = self.studentProjects[studLvl_var.get()]
@@ -400,6 +410,7 @@ class Handlers():
         drive.CreateStudentFolder(studentName,ClassNames[studentType],ClassLevels[studentLevel])
         ui.alertBox("Sucess","Student Folder Created")
         self.newStudentWindow.destroy()
+        handlers.getStudentNames()
 
 #programNames = ["Codologie","Buildologie","Gamologie","K-12 STEM Club","Camps"]
 

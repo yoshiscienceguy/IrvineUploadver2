@@ -223,22 +223,23 @@ class Drive():
         else:
             idtoReturn,Link = returned
         return idtoReturn
+    def folderExists(self,FolderName):
+        file_list = self.drive.ListFile({"q":"title='"+FolderName+"' and '"+self.ids.StudentFolder+"' in parents and trashed = false"}).GetList()
+        if(len(file_list) > 0):
+            return file_list[0]["id"]
+        else:
+            return None
+
+        
     def CreateStudentFolder(self,StudentName,StudentType,StudentLevel):
         StudentFolderID = ""
-        if(StudentType == "Buildologie"):
-            StudentFolderID = self.CreateFolder(self.ids.Buildologie,StudentName)
-        if(StudentType == "Codologie"):
-            StudentFolderID = self.CreateFolder(self.ids.Codologie,StudentName)
-        if(StudentType == "Gamologie"):
-            StudentFolderID = self.CreateFolder(self.ids.Gamologie,StudentName)
-        if(StudentType == "K-12 STEM"):
-            StudentFolderID = self.CreateFolder(self.ids.KStemClub,StudentName)
-        if(StudentType == "Fabologie"):
-            StudentFolderID = self.CreateFolder(self.ids.Fabologie,StudentName)
-        if(StudentType == "Appologie"):
-            StudentFolderID = self.CreateFolder(self.ids.Appologie,StudentName)
-
-        LevelID = self.CreateFolder(StudentFolderID,StudentLevel)
+        existingID = self.folderExists(StudentName)
+        if(existingID):
+            ClassID = self.CreateFolder(existingID,StudentType)
+        else:
+            StudentFolderID = self.CreateFolder(self.ids.StudentFolder,StudentName)
+            ClassID = self.CreateFolder(StudentFolderID,StudentType)
+        LevelID = self.CreateFolder(ClassID,StudentLevel)
         self.CreateFolder(LevelID,"Code")
         self.CreateFolder(LevelID,"Documents")
         self.CreateFolder(LevelID,"Media")
