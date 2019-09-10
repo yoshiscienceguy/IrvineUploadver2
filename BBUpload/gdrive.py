@@ -31,6 +31,7 @@ class IDs():
         self.DocTemplates = "0B5wtxWXBa7L8a1VjU0tGNElmdVk"
         self.CTechnicalReport = "1Bx-_MCr9jqiVTkm7UcSDwHnwKmWk-1YitOgRctbpDzw"
         self.BTechnicalReport = "1p81KbPvAioTTcPtsypfTVm6gNcvrnZuaD5Uz8iuHrsc"
+        self.reportCardID = "19ggw12Fd4WX2xrp0fDap-J6nQ8EW-wES_MUKTjjXbjk"
     
 class Drive():
     def __init__(self):
@@ -223,6 +224,11 @@ class Drive():
         else:
             idtoReturn,Link = returned
         return idtoReturn
+    def createReportCard(self, ParentID, studentName):
+        reportCardName = studentName + " - Report Card"
+        self.drive.auth.service.files().copy(fileId = self.ids.reportCardID,
+                                             body={"parents": [{"kind": "drive#fileLink",
+                                                 "id": ParentID}], 'title': reportCardName}).execute()
     def folderExists(self,FolderName):
         file_list = self.drive.ListFile({"q":"title='"+FolderName+"' and '"+self.ids.StudentFolder+"' in parents and trashed = false"}).GetList()
         if(len(file_list) > 0):
@@ -236,14 +242,18 @@ class Drive():
         existingID = self.folderExists(StudentName)
         if(existingID):
             ClassID = self.CreateFolder(existingID,StudentType)
+            self.createReportCard(existingID,StudentName)
         else:
             StudentFolderID = self.CreateFolder(self.ids.StudentFolder,StudentName)
             ClassID = self.CreateFolder(StudentFolderID,StudentType)
+            self.createReportCard(StudentFolderID,StudentName)
         LevelID = self.CreateFolder(ClassID,StudentLevel)
         self.CreateFolder(LevelID,"Code")
         self.CreateFolder(LevelID,"Documents")
         self.CreateFolder(LevelID,"Media")
+        
 #gd = Drive()
+#gd.createReportCard("aaa","1fYmq9AmcDSRT-unLH9XASuJ3Rlb9QxjE")
 #gd.CreateFolder(gd.ids.DocTemplates,"testingFolder")
 #gd.GetFiles(gd.ids.DocTemplates)
 #gd.CopyTechnicalReport("0B5wtxWXBa7L8S0s1dUxXX0pmNTQ","Yolo")
